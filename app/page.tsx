@@ -1,101 +1,116 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [phrase, setPhrase] = useState<string[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const words = [
+    { word: "Eu", image: "/images/cat.jpg" },
+    { word: "Quero", image: "" },
+    { word: "Água", image: "/images/water.jpg" },
+    { word: "Tomar café", image: "/images/coffee.jpg" },
+    { word: "Almoço", image: "/images/lunch.jpg" },
+    { word: "Janta", image: "/images/janta.jpg" },
+    { word: "Lanche", image: "/images/lanche.jpg" },
+    { word: "Ir", image: "/images/cat.jpg" },
+    { word: "Banheiro", image: "/images/banheiro.jpg" },
+    { word: "Sala", image: "/images/sala.jpg" },
+    { word: "Cozinha", image: "/images/cat.jpg" },
+    { word: "Dormir", image: "/images/cat.jpg" },
+    { word: "Passear", image: "/images/cat.jpg" },
+    { word: "Andar", image: "/images/cat.jpg" },
+    { word: "Dor", image: "/images/cat.jpg" },
+    { word: "Cabeça", image: "/images/cat.jpg" },
+    { word: "Pescoço", image: "/images/cat.jpg" },
+    { word: "Barriga", image: "/images/cat.jpg" },
+    { word: "Perna", image: "/images/cat.jpg" },
+    { word: "Tontura", image: "/images/cat.jpg" },
+    { word: "Palpitação", image: "/images/cat.jpg" },
+    { word: "Sim", image: "/images/cat.jpg" },
+    { word: "Não", image: "/images/cat.jpg" },
+    { word: "Gato", image: "/images/cat.jpg" },
+    { word: "Cachorro", image: "/images/dog.jpg" },
+    { word: "Pássaro", image: "/images/bird.jpg" },
+    { word: "Karina", image: "" },
+    { word: "Kyvia", image: "" },
+    { word: "Carlinhos", image: "" },
+    { word: "Andrea", image: "" },
+    { word: "Pamella", image: "" },
+    { word: "Gabriel", image: "" },
+    { word: "Vinicius", image: "" },
+    { word: "Mário", image: "" },
+    { word: "Nelsinho", image: "" },
+    { word: "Neide", image: "" },
+  ];
+
+  const handleWordClick = (word: string, image: string) => {
+    setSelectedImage(image);
+    setPhrase((prevPhrase) => [...prevPhrase, word]);
+    speakWord(word);
+  };
+
+  const handleErase = () => {
+    setSelectedImage(null);
+    setPhrase([]);
+    window.speechSynthesis.cancel();
+  };
+
+  const handleSpeak = () => {
+    speakWord(phrase.join(" "));
+  };
+
+  const speakWord = (text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "pt-BR";
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return (
+    <div className="flex flex-col md:flex-row h-screen">
+      <section className="flex-[20%] flex items-center justify-center overflow-hidden">
+        {selectedImage && (
+          <Image src={selectedImage} alt="Images" width={200} height={200} />
+        )}
+      </section>
+      <section className="flex-[50%] flex flex-col items-center justify-center relative overflow-auto">
+        <div className="text-center flex flex-wrap justify-center">
+          {words.map((item) => (
+            <div
+              key={item.word}
+              onClick={() => handleWordClick(item.word, item.image)}
+              className="bg-white text-black p-2 m-2 rounded cursor-pointer"
+            >
+              {item.word}
+            </div>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+      <section className="flex-[30%] bg-neutral-800 flex items-start justify-center relative border-current border-[2px] rounded-lg overflow-auto">
+        <div className="text-black p-2 flex flex-wrap pb-20">
+          {phrase.map((word, index) => (
+            <div key={index} className="bg-gray-200 p-1 m-1 rounded">
+              {word}
+            </div>
+          ))}
+        </div>
+        <div className="fixed bottom-0 mb-2">
+          <button
+            onClick={handleErase}
+            className="bg-red-500 text-xl font-semibold p-3 m-2 rounded-xl"
+          >
+            Apagar
+          </button>
+          <button
+            onClick={handleSpeak}
+            className="bg-blue-500 text-xl font-semibold text-white p-3 m-2 rounded-xl"
+          >
+            Falar
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
